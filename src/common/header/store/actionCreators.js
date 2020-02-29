@@ -11,7 +11,8 @@ export const getList = () => {
       if (res.data) {
         let action = {
           type: constants.CHANGE_LIST,
-          data: fromJS(res.data.data)
+          data: fromJS(res.data.data),
+          totalPage: Math.ceil(res.data.data.length / 10)
         }
 
         dispatch(action);
@@ -28,4 +29,17 @@ export const searchFocus = () => ({
 
 export const searchBlur = () => ({
   type: constants.SEARCH_BLUR
+});
+
+export const mouseEnter = () => ({
+  type: constants.MOUSE_ENTER
+});
+
+export const mouseLeave = () => ({
+  type: constants.MOUSE_LEAVE
+});
+
+export const changePage = (page) => ({
+  type: constants.CHANGE_PAGE,
+  page
 });

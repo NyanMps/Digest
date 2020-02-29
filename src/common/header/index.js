@@ -36,7 +36,7 @@ class Header extends Component{
               classNames="slide"
             >
               <NavSearch className={this.props.focused ? 'focused' : ''}
-                         onFocus={this.props.handleInputFocus}
+                         onFocus={() => {this.props.handleInputFocus(this.props.list)}}
                          onBlur={this.props.handleInputBlur}
               >
               </NavSearch>
@@ -44,7 +44,7 @@ class Header extends Component{
             <i className={this.props.focused ? 'focused iconfont' : 'iconfont'}>&#xe614;</i>
 
             {/* 热门搜索 */}
-            {this.getListArea(this.props.focused)}
+            {this.getListArea()}
           </SearchWrapper>
         </Nav>
 
@@ -59,21 +59,28 @@ class Header extends Component{
     )
   }
 
-  getListArea (show) {
-    if (show) {
+  getListArea () {
+    const { list, page, mouseIn,focused, totalPage } = this.props;
+    if (mouseIn || focused) {
+      // 不可变转为普通对象，否则不能 list[index]
+      const newList = list.toJS();
+      const pageList = [];
+
+      for (let i = ((page - 1) * 10); i < page * 10; i++) {
+        pageList.push(
+          <SearchInfoItem key={newList[i]}>{newList[i]}</SearchInfoItem>
+        )
+      }
+
       return (
-        <SearchInfo>
+        <SearchInfo onMouseEnter={this.props.handleMouseEnter} onMouseLeave={this.props.handleMouseLeave}>
           <SearchInfoTitle>
             热门搜索
-            <SearchInfoSwitch>换一批</SearchInfoSwitch>
+            <SearchInfoSwitch onClick={() => {this.props.handleChangePage(page, totalPage)}}>换一批</SearchInfoSwitch>
           </SearchInfoTitle>
 
           <SearchInfoList>
-            {
-              this.props.list.map((item) => {
-                return <SearchInfoItem key={item}>{item}</SearchInfoItem>
-              })
-            }
+            {pageList}
           </SearchInfoList>
         </SearchInfo>
       )
@@ -88,19 +95,35 @@ const mapStateToProps = (state) => {
     // 不可变对象使用 get
     focused: state.get('header').get('focused'),
     // state.getIn(['header', 'focused'])  等价于
-    list: state.getIn(['header', 'list'])
+    list: state.getIn(['header', 'list']),
+    mouseIn: state.getIn(['header', 'mouseIn']),
+    totalPage: state.getIn(['header', 'totalPage']),
+    page: state.getIn(['header', 'page']),
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleInputFocus () {
+    handleInputFocus (list) {
       // 获取热门词
-      dispatch(actions.getList());
+      (list.size === 0) && dispatch(actions.getList());
       dispatch(actions.searchFocus());
     },
     handleInputBlur () {
       dispatch(actions.searchBlur());
+    },
+    handleMouseEnter () {
+      dispatch(actions.mouseEnter());
+    },
+    handleMouseLeave () {
+      dispatch(actions.mouseLeave());
+    },
+    handleChangePage (page, totalPage) {
+      if (totalPage <= page) {
+        dispatch(actions.changePage(1))
+        return
+      }
+      dispatch(actions.changePage(page + 1))
     }
   }
 }
