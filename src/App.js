@@ -4,6 +4,7 @@ import {ResetStyle} from './style'
 import {GlobalStyle} from './statics/iconfont/iconfont'
 import store from './store'
 import {Provider} from 'react-redux'
+import {BrowserRouter, Route} from 'react-router-dom'
 
 
 function App() {
@@ -13,6 +14,10 @@ function App() {
       <GlobalStyle/>
 
       <Header />
+      <BrowserRouter>
+        <Route path='/' exact render={() => <div>home</div>}></Route>
+        <Route path='/detail' exact render={() => <div>detail</div>}></Route>
+      </BrowserRouter>
     </Provider>
   );
 }
