@@ -1,10 +1,23 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Addition, Button, HeaderWrapper, Logo, Nav, NavItem, NavSearch, SearchWrapper} from './style'
+import {
+  Addition,
+  Button,
+  HeaderWrapper,
+  Logo,
+  Nav,
+  NavItem,
+  NavSearch,
+  SearchInfo, SearchInfoItem, SearchInfoList, SearchInfoSwitch,
+  SearchInfoTitle,
+  SearchWrapper
+} from './style'
 import {CSSTransition} from 'react-transition-group'
 import {actions} from './store'
 
-const Header = (props) => {
+class Header extends Component{
+
+  render () {
     return (
       <HeaderWrapper>
         <Logo/>
@@ -18,17 +31,20 @@ const Header = (props) => {
 
           <SearchWrapper>
             <CSSTransition
-              in={props.focused}
+              in={this.props.focused}
               timeout={200}
               classNames="slide"
             >
-              <NavSearch className={props.focused ? 'focused' : ''}
-                         onFocus={props.handleInputFocus}
-                         onBlur={props.handleInputBlur}
-                >
+              <NavSearch className={this.props.focused ? 'focused' : ''}
+                         onFocus={this.props.handleInputFocus}
+                         onBlur={this.props.handleInputBlur}
+              >
               </NavSearch>
             </CSSTransition>
-            <i className={props.focused ? 'focused iconfont' : 'iconfont'}>&#xe614;</i>
+            <i className={this.props.focused ? 'focused iconfont' : 'iconfont'}>&#xe614;</i>
+
+            {/* 热门搜索 */}
+            {this.getListArea(this.props.focused)}
           </SearchWrapper>
         </Nav>
 
@@ -41,19 +57,46 @@ const Header = (props) => {
         </Addition>
       </HeaderWrapper>
     )
+  }
+
+  getListArea (show) {
+    if (show) {
+      return (
+        <SearchInfo>
+          <SearchInfoTitle>
+            热门搜索
+            <SearchInfoSwitch>换一批</SearchInfoSwitch>
+          </SearchInfoTitle>
+
+          <SearchInfoList>
+            {
+              this.props.list.map((item) => {
+                return <SearchInfoItem key={item}>{item}</SearchInfoItem>
+              })
+            }
+          </SearchInfoList>
+        </SearchInfo>
+      )
+    } else {
+      return null
+    }
+  }
 }
 
 const mapStateToProps = (state) => {
   return {
     // 不可变对象使用 get
-    focused: state.get('header').get('focused')
+    focused: state.get('header').get('focused'),
     // state.getIn(['header', 'focused'])  等价于
+    list: state.getIn(['header', 'list'])
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     handleInputFocus () {
+      // 获取热门词
+      dispatch(actions.getList());
       dispatch(actions.searchFocus());
     },
     handleInputBlur () {
