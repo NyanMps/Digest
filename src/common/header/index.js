@@ -46,7 +46,8 @@ const Header = (props) => {
 const mapStateToProps = (state) => {
   return {
     // 不可变对象使用 get
-    focused: state.header.get('focused')
+    focused: state.get('header').get('focused')
+    // state.getIn(['header', 'focused'])  等价于
   }
 }
 
