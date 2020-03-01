@@ -1,15 +1,17 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import {ListInfo, ListItem, LoadMore} from '../style'
 import {connect} from 'react-redux'
 import {actionCreators as actions} from '../store'
+import {Link} from 'react-router-dom'
 
-class List extends Component{
+class List extends PureComponent{
   render () {
     return (
       <div>
         {
           this.props.list.map((item, index) => {
             return (
+              <Link key={index} to={'/detail/' + item.get('id')}>
                 <ListItem >
                   <img alt='' className='pic' src={item.get('imgUrl')} />
                   <ListInfo>
@@ -17,6 +19,7 @@ class List extends Component{
                     <p className='desc'>{item.get('desc')}</p>
                   </ListInfo>
                 </ListItem>
+              </Link>
             );
           })
         }

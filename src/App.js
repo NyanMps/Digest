@@ -15,8 +15,8 @@ function App() {
       <ResetStyle/>
       <GlobalStyle/>
 
-      <Header />
       <BrowserRouter>
+        <Header />
         <Route path='/' exact component={Home}/>
         <Route path='/detail' exact component={Detail}/>
       </BrowserRouter>
