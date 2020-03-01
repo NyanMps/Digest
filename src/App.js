@@ -7,6 +7,7 @@ import {Provider} from 'react-redux'
 import {BrowserRouter, Route} from 'react-router-dom'
 import Home from './pages/home'
 import Detail from './pages/detail'
+import Login from './pages/login'
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <Route path='/' exact component={Home}/>
+        <Route path='/login' exact component={Login}/>
         <Route path='/detail/:id' exact component={Detail}/>
       </BrowserRouter>
     </Provider>
