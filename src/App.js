@@ -5,6 +5,8 @@ import {GlobalStyle} from './statics/iconfont/iconfont'
 import store from './store'
 import {Provider} from 'react-redux'
 import {BrowserRouter, Route} from 'react-router-dom'
+import Home from './pages/home'
+import Detail from './pages/detail'
 
 
 function App() {
@@ -15,8 +17,8 @@ function App() {
 
       <Header />
       <BrowserRouter>
-        <Route path='/' exact render={() => <div>home</div>}></Route>
-        <Route path='/detail' exact render={() => <div>detail</div>}></Route>
+        <Route path='/' exact component={Home}/>
+        <Route path='/detail' exact component={Detail}/>
       </BrowserRouter>
     </Provider>
   );
